@@ -20,12 +20,14 @@
         
  }
 
+console.time('1 method');
 extractCharacters1('abcd');
 //['a', 'b', 'c', 'd']
 extractCharacters1('aaaabc');
 //['a', 'b', 'c']
 extractCharacters1('Hello, world');
 //[ 'h', 'e', 'l', 'o', ',', ' ', 'w', 'r', 'd' ];
+console.timeEnd('1 method');
 
 /*
  * Version 2
@@ -47,17 +49,18 @@ var arr = str.toLowerCase().split('');
 	console.log(arr);
 
 }
-
+console.time('2 method');
 extractCharacters2('abcd');
 //['a', 'b', 'c', 'd']
 extractCharacters2('aaaabc');
 //['a', 'b', 'c']
 extractCharacters2('Hello, world');
 //[ 'h', 'e', 'l', 'o', ',', ' ', 'w', 'r', 'd' ];
-
+console.timeEnd('2 method');
 
 /*
  * Version 3
+ * The fastest
  */
 
 function extractCharacters3(str){
@@ -68,11 +71,11 @@ function extractCharacters3(str){
     }
     console.log(Object.keys(obj));
 }
-
+console.time('3 method');
 extractCharacters3('abcd');
 //['a', 'b', 'c', 'd']
 extractCharacters3('aaaabc');
 //['a', 'b', 'c']
 extractCharacters3('Hello, world');
 //[ 'h', 'e', 'l', 'o', ',', ' ', 'w', 'r', 'd' ];
-
+console.timeEnd('3 method');
