@@ -1,7 +1,7 @@
 //3 Calculator
 
 function Calculator() {
-	var arr = [].slice.call(arguments);
+	var arr = Array.prototype.slice.call(arguments);
 
 	this.add = function(num) {
 		arr.push(num);
