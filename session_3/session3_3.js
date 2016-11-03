@@ -1,29 +1,33 @@
 //3 Calculator
 
 function Calculator() {
-	var arr = Array.prototype.slice.call(arguments);
 
-	this.add = function(num) {
-		arr.push(num);
-
-	};
-
-	this.getCurrentSum = function(index) {
-		if (index !== undefined) {
-			var arrCut = arr.slice();
-			arrCut.length = index;
-		} else {
-			arrCut = arr;
-		}
-
-		return arrCut.reduce(function (prev, cur) {
-			return prev + cur;
-
-		})
-
-	};
+	this.arr = Array.prototype.slice.call(arguments);
 
 }
+
+Calculator.prototype.add = function(num) {
+
+	this.arr.push(num);
+
+};
+
+Calculator.prototype.getCurrentSum = function(index) {
+
+	if (index !== undefined) {
+		var arrCut = this.arr.slice();
+		arrCut.length = index;
+	} else {
+		arrCut = this.arr;
+	}
+
+	return arrCut.reduce(function (prev, cur) {
+		return prev + cur;
+
+	})
+
+};
+
 
 var calc1 = new Calculator(3, 8, 11);
 var calc2 = new Calculator(5, 12, 17);

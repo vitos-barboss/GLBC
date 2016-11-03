@@ -1,40 +1,37 @@
 // 2 Searching for favorite songs.
 
-var songs = [
-	{
-		name: 'Everlast – What It\'s Like',
-		played: rand()
-	},
-	{
-		name: 'The Cancel – Summer tape',
-		played: rand()
-	},
-	{
-		name: 'Soil – Halo',
-		played: rand()
-	},
-	{
-		name: 'Jack White – Love Is Blindness',
-		played: rand()
-	},
-	{
-		name: 'Leny Kravitz – I Belong To You',
-		played: rand()
-	}
-];
+function CreateSong(name, played) {
 
-function rand() {
-
-	return Math.round(Math.random()*100);
+	this.name = name;
+	this.played = played;
 
 }
 
-function favoriteSong() {
+CreateSong.favoriteSong = function () {
 
-	for(var i = 0; i < this.length; i++) {
-		console.log(this[i].name + ' // Played:' + this[i].played + ' #' +i);
+	var favoriteSongName,
+		favoriteSongPos,
+		favoriteSongCount = 0;
+
+	for (var i = 0; i < this.length; i++) {
+		if (this[i].played > favoriteSongCount) {
+			favoriteSongCount = this[i].played;
+			favoriteSongName = this[i].name;
+			favoriteSongPos = i + 1;
+		}
 	}
+
+	return favoriteSongName + ' // Played:' + favoriteSongCount + ' #' + favoriteSongPos;
 
 }
 
-favoriteSong.call(songs);
+var listOfSongs = [];
+
+listOfSongs.push(new CreateSong('Everlast – What It\'s Like', 20));
+listOfSongs.push(new CreateSong('The Cancel – Summer tape', 26));
+listOfSongs.push(new CreateSong('Soil – Halo', 9));
+listOfSongs.push(new CreateSong('Jack White – Love Is Blindness', 17));
+listOfSongs.push(new CreateSong('Leny Kravitz – I Belong To You', 24));
+
+console.log(CreateSong.favoriteSong.call(listOfSongs));
+
