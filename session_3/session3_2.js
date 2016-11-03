@@ -29,12 +29,12 @@ function rand() {
 
 }
 
-function favoriteSong(list) {
+function favoriteSong() {
 
-	for(var i = 0; i < list.length; i++) {
-		console.log('' + list[i].name + ' // Played:' + list[i].played + ' #' +i);
+	for(var i = 0; i < this.length; i++) {
+		console.log(this[i].name + ' // Played:' + this[i].played + ' #' +i);
 	}
 
 }
 
-favoriteSong(songs);
+favoriteSong.call(songs);
