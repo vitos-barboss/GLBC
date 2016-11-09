@@ -330,15 +330,3 @@ Game.prototype.fight = function() {
     }
 };
 
-var game = new Game();
-var warrior = new Hero('myHero', 'warrior');
-var zombie = new Monster('zombie');
-var holem = new Monster('holem');
-
-game.addHero(warrior);
-game.addMonster(zombie);
-game.addMonster(holem);
-
-game.beginJourney();
-warrior.attack(zombie);
-
