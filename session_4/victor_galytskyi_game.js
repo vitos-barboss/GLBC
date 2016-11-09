@@ -50,18 +50,12 @@ Character.prototype.getName = function() {
 
 Character.prototype.attack = function(target) {
 
-    if (target.constructor === this.constructor) {
-
-        throw new Error('I will attack only ' + target.constructor.name);
-    }
-
-    if (target.life - this.damage <= 0) {
-        target.life = 0;
-        return this.constructor.name + ' attacked, ' + target.getCharClass() + ' killed';
-    } else {
+    if (target.life - this.damage >= 0) {
         target.life -= this.damage;
-        return this.constructor.name + ' attacked, done ' + this.damage + ' damage to ' + target.getCharClass();
+    } else {
+        target.life = 0;
     }
+
 };
 
 /*
@@ -79,20 +73,51 @@ function Hero(name, heroClass) {
 
     this.name = name;
 
-    switch (heroClass) {
-        case 'warrior':
-            this.superclass('Warrior', 30, 4);
-            break;
-        case 'rogue':
-            this.superclass('Rogue', 25, 3);
-            break;
-        case 'sorcerer':
-            this.superclass('Sorcerer', 20, 5);
-            break;
-        default:
-            throw new Error("Incorrect character class provided");
+    if (Hero.charClassConig[heroClass]) {
+        this.superclass(Hero.charClassConig[heroClass].charClass,
+                        Hero.charClassConig[heroClass].life,
+                        Hero.charClassConig[heroClass].damage);
+    } else {
+        throw new Error('Incorrect character class provided');
     }
+
 }
+
+Hero.charClassConig = {
+    warrior:
+        {charClass: 'Warrior', life: 30, damage: 4},
+    rogue:
+        {charClass: 'Rogue', life: 25, damage: 3},
+    sorcerer:
+        {charClass: 'Sorcerer', life: 20, damage: 5}
+};
+
+/*
+ * Method of Hero, decrease amount of target life
+ * on the value of attackers damage.
+ *
+ * Accepts target - instance of Hero.
+ * returns:
+ *      1) "CHARACTER_CLASS killed" - this action will kill target;
+ *      2) "done AMOUNT_OF_DAMAGE damage to CHARACTER_CLASS";
+ */
+
+Hero.prototype.attack = function(target) {
+
+    if (target instanceof Hero) {
+        throw new Error('I will attack only monsters');
+    }
+
+    this.superclass.prototype.attack.call(this, target);
+
+    if (target.life === 0) {
+        return 'Hero attacked, ' + target.getCharClass() + ' killed';
+    } else {
+        return 'Hero attacked, done ' + this.damage + ' damage to ' + target.getCharClass();
+    }
+
+};
+
 
 Monster.prototype = Object.create(Character.prototype);
 Monster.prototype.constructor = Monster;
@@ -107,20 +132,23 @@ Monster.prototype.superclass = Character;
 
 function Monster(monsterClass) {
 
-    switch (monsterClass) {
-        case 'zombie':
-            this.superclass('Zombie', 8, 4);
-            break;
-        case 'skeleton':
-            this.superclass('Skeleton', 10, 6);
-            break;
-        case 'holem':
-            this.superclass('Holem', 15, 6);
-            break;
-        default:
-            throw new Error("Incorrect character class provided");
+    if (Monster.charClassConig[monsterClass]) {
+        this.superclass(Monster.charClassConig[monsterClass].charClass,
+                        Monster.charClassConig[monsterClass].life,
+                        Monster.charClassConig[monsterClass].damage);
+    } else {
+        throw new Error('Incorrect character class provided');
     }
 }
+
+Monster.charClassConig = {
+    zombie:
+        {charClass: 'Zombie', life: 8, damage: 4},
+    skeleton:
+        {charClass: 'Skeleton', life: 10, damage: 6},
+    holem:
+        {charClass: 'Holem', life: 15, damage: 6}
+};
 
 /*
  * Method that return name of monster
@@ -129,6 +157,32 @@ function Monster(monsterClass) {
 
 Monster.prototype.getName = function() {
     return 'I am ' + this.charClass + ' I don`t have name';
+};
+
+/*
+ * Method of Monster, decrease amount of target life
+ * on the value of attackers damage.
+ *
+ * Accepts target - instance of Monster.
+ * returns:
+ *      1) "CHARACTER_CLASS killed" - this action will kill target;
+ *      2) "done AMOUNT_OF_DAMAGE damage to CHARACTER_CLASS";
+ */
+
+Monster.prototype.attack = function(target) {
+
+    if (target instanceof Monster) {
+        throw new Error('I will attack only hero');
+    }
+
+    this.superclass.prototype.attack.call(this, target);
+
+    if (target.life === 0) {
+        return 'Monster attacked, ' + target.getCharClass() + ' killed';
+    } else {
+        return 'Monster attacked, done ' + this.damage + ' damage to ' + target.getCharClass();
+    }
+
 };
 
 /*
@@ -275,4 +329,16 @@ Game.prototype.fight = function() {
         throw new Error('Begin your journey to start fighting monsters');
     }
 };
+
+var game = new Game();
+var warrior = new Hero('myHero', 'warrior');
+var zombie = new Monster('zombie');
+var holem = new Monster('holem');
+
+game.addHero(warrior);
+game.addMonster(zombie);
+game.addMonster(holem);
+
+game.beginJourney();
+warrior.attack(zombie);
 
