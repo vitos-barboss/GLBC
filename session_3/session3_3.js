@@ -1,4 +1,4 @@
-//3 Calculator
+// //3 Calculator
 
 function Calculator() {
 
@@ -14,14 +14,15 @@ Calculator.prototype.add = function(num) {
 
 Calculator.prototype.getCurrentSum = function(index) {
 
-	if (index !== undefined) {
-		var arrCut = this.arr.slice();
-		arrCut.length = index;
+	var arrayForCalculation = [];
+
+	if (index !== undefined && index !== 0) {
+		arrayForCalculation = this.arr.slice(0, index);
 	} else {
-		arrCut = this.arr;
+		arrayForCalculation = this.arr;
 	}
 
-	return arrCut.reduce(function (prev, cur) {
+	return arrayForCalculation.reduce(function (prev, cur) {
 		return prev + cur;
 
 	})

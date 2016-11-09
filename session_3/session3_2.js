@@ -7,17 +7,17 @@ function CreateSong(name, played) {
 
 }
 
-CreateSong.favoriteSong = function () {
+function favoriteSong() {
 
 	var favoriteSongName,
-		favoriteSongPos,
-		favoriteSongCount = 0;
+		favoriteSongPos;
+		favoriteSongCount = this[0].played;
 
 	for (var i = 0; i < this.length; i++) {
 		if (this[i].played > favoriteSongCount) {
-			favoriteSongCount = this[i].played;
 			favoriteSongName = this[i].name;
-			favoriteSongPos = i + 1;
+			favoriteSongPos = i;
+			favoriteSongCount = this[i].played;
 		}
 	}
 
@@ -33,5 +33,6 @@ listOfSongs.push(new CreateSong('Soil – Halo', 9));
 listOfSongs.push(new CreateSong('Jack White – Love Is Blindness', 17));
 listOfSongs.push(new CreateSong('Leny Kravitz – I Belong To You', 24));
 
-console.log(CreateSong.favoriteSong.call(listOfSongs));
+console.log(favoriteSong.call(listOfSongs));
+
 
