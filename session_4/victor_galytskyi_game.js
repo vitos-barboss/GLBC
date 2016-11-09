@@ -31,11 +31,49 @@ Character.prototype.getCharClass = function() {
 };
 
 /*
+ * Method that return name of character
+ */
+
+Character.prototype.getName = function() {
+    return this.name;
+};
+
+/*
+ * Method of Character, decrease amount of target life
+ * on the value of attackers damage.
+ *
+ * Accepts target - instance of Hero(Monster).
+ * returns:
+ *      1) "CHARACTER_CLASS killed" - this action will kill target;
+ *      2) "done AMOUNT_OF_DAMAGE damage to CHARACTER_CLASS";
+ */
+
+Character.prototype.attack = function(target) {
+
+    if (target.constructor === this.constructor) {
+
+        throw new Error('I will attack only ' + target.constructor.name);
+    }
+
+    if (target.life - this.damage <= 0) {
+        target.life = 0;
+        return this.constructor.name + ' attacked, ' + target.getCharClass() + ' killed';
+    } else {
+        target.life -= this.damage;
+        return this.constructor.name + ' attacked, done ' + this.damage + ' damage to ' + target.getCharClass();
+    }
+};
+
+/*
  * Hero constructor
  * accepts:
  *      1) name of hero (string)
  *      2) class of hero (string)
  */
+
+Hero.prototype = Object.create(Character.prototype);
+Hero.prototype.constructor = Hero;
+Hero.prototype.superclass = Character;
 
 function Hero(name, heroClass) {
 
@@ -55,42 +93,6 @@ function Hero(name, heroClass) {
             throw new Error("Incorrect character class provided");
     }
 }
-
-Hero.prototype = Object.create(Character.prototype);
-Hero.prototype.constructor = Hero;
-Hero.prototype.superclass = Character;
-
-/*
- * Method that return name of hero
- */
-
-Hero.prototype.getName = function() {
-    return this.name;
-};
-
-/*
- * Method of Hero, decrease amount of target life
- * on the value of attackers damage.
- *
- * Accepts target - instance of Hero.
- * returns:
- *      1) "CHARACTER_CLASS killed" - this action will kill target;
- *      2) "done AMOUNT_OF_DAMAGE damage to CHARACTER_CLASS";
- */
-
-Hero.prototype.attack = function(target) {
-
-    if (target instanceof Hero) {
-        throw new Error('I will attack only monsters');
-    }
-    if (target.life - this.damage <= 0) {
-        target.life = 0;
-        return 'Hero attacked, ' + target.getCharClass() + ' killed';
-    } else {
-        target.life -= this.damage;
-        return 'Hero attacked, done ' + this.damage + ' damage to ' + target.getCharClass();
-    }
-};
 
 Monster.prototype = Object.create(Character.prototype);
 Monster.prototype.constructor = Monster;
@@ -127,31 +129,6 @@ function Monster(monsterClass) {
 
 Monster.prototype.getName = function() {
     return 'I am ' + this.charClass + ' I don`t have name';
-};
-
-/*
- * Method of Monster, decrease amount of target life
- * on the value of attackers damage.
- *
- * Accepts target - instance of Monster.
- * returns:
- *      1) "CHARACTER_CLASS killed" - this action will kill target;
- *      2) "done AMOUNT_OF_DAMAGE damage to CHARACTER_CLASS";
- */
-
-Monster.prototype.attack = function(target) {
-
-    if (target instanceof Monster) {
-        throw new Error('I will attack only hero');
-    }
-    if (target.life - this.damage <= 0) {
-        target.life = 0;
-        return 'Monster attacked, ' + target.getCharClass() + ' killed';
-    } else {
-        target.life -= this.damage;
-        return 'Monster attacked, done ' + this.damage + ' damage to ' + target.getCharClass();
-    }
-
 };
 
 /*
@@ -246,9 +223,9 @@ Game.prototype.finishJourney = function() {
         return 'The Game is finished. Hero is dead :(';
     }
 
-    var tmp = this.monsters;
-    var monstersDead = tmp.every(function(value, i) {
-        return tmp[i].life === 0;
+
+    var monstersDead = this.monsters.every(function(value, i, arrOfMonsters) {
+        return arrOfMonsters[i].life === 0;
     });
     if (monstersDead) {
         this.status = 'Finished';
@@ -270,31 +247,32 @@ Game.prototype.finishJourney = function() {
 Game.prototype.fight = function() {
 
     if (this.status === 'In progress') {
+        
+        var nextMonsterForFight = this.monsters.find(function (monster) {
+            return monster.life > 0;
+        });
 
-        for (var i = 0; i < this.monsters.length; i++) {
-            if (this.monsters[i].life !== 0) {
-                while (this.monsters[i].life > 0 && this.hero.life > 0) {
-                    var fightHeroResult = this.hero.attack(this.monsters[i]);
-                    console.log(fightHeroResult); // fast
-                    if (this.monsters[i].life > 0) {
-                        var fightMonsterResult = this.monsters[i].attack(this.hero);
-                        console.log(fightMonsterResult); // fast
-                    }
-                }
+        if (nextMonsterForFight === undefined) {
+            return 'Monsters are dead. You can finish your journey';
+        }
 
-                if (this.hero.life <= 0) {
-                    return 'Monster win';
-                } else {
-                    return 'Hero win';
-                }
+        while (nextMonsterForFight.life > 0 && this.hero.life > 0) {
+            var fightHeroResult = this.hero.attack(nextMonsterForFight);
+            console.log(fightHeroResult); // fast
+            if (nextMonsterForFight.life > 0) {
+                var fightMonsterResult = nextMonsterForFight.attack(this.hero);
+                console.log(fightMonsterResult); // fast
             }
+        }
+
+        if (this.hero.life <= 0) {
+            return 'Monster win';
+        } else {
+            return 'Hero win';
         }
 
     } else {
         throw new Error('Begin your journey to start fighting monsters');
     }
 };
-
-
-
 
