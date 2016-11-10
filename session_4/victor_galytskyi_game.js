@@ -48,16 +48,16 @@ Character.prototype.getName = function() {
  *      2) "done AMOUNT_OF_DAMAGE damage to CHARACTER_CLASS";
  */
 
-Character.prototype.attack = function(target, prefix) {
+Character.prototype.attack = function(target) {
     // debugger;
     if (target.life - this.damage >= 0) {
         target.life -= this.damage;
     } else {
         target.life = 0;
-        return prefix + target.getCharClass() + ' killed';
+        return target.getCharClass() + ' killed';
     }
 
-    return prefix + 'done ' + this.damage + ' damage to ' + target.getCharClass();
+    return 'done ' + this.damage + ' damage to ' + target.getCharClass();
 
 
 };
@@ -112,9 +112,7 @@ Hero.prototype.attack = function(target) {
         throw new Error('I will attack only monsters');
     }
 
-    var prefix = 'Hero attacked, ';
-
-    return this.superclass.prototype.attack.call(this, target, prefix);
+    return 'Hero attacked, ' + this.superclass.prototype.attack.call(this, target);
 
 
 };
@@ -176,9 +174,7 @@ Monster.prototype.attack = function(target) {
         throw new Error('I will attack only hero');
     }
 
-    var prefix = 'Monster attacked, ';
-
-    return this.superclass.prototype.attack.call(this, target, prefix);
+    return 'Monster attacked, ' + this.superclass.prototype.attack.call(this, target);
 
 };
 
