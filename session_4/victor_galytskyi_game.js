@@ -48,13 +48,17 @@ Character.prototype.getName = function() {
  *      2) "done AMOUNT_OF_DAMAGE damage to CHARACTER_CLASS";
  */
 
-Character.prototype.attack = function(target) {
-
+Character.prototype.attack = function(target, prefix) {
+    // debugger;
     if (target.life - this.damage >= 0) {
         target.life -= this.damage;
     } else {
         target.life = 0;
+        return prefix + target.getCharClass() + ' killed';
     }
+
+    return prefix + 'done ' + this.damage + ' damage to ' + target.getCharClass();
+
 
 };
 
@@ -108,13 +112,10 @@ Hero.prototype.attack = function(target) {
         throw new Error('I will attack only monsters');
     }
 
-    this.superclass.prototype.attack.call(this, target);
+    var prefix = 'Hero attacked, ';
 
-    if (target.life === 0) {
-        return 'Hero attacked, ' + target.getCharClass() + ' killed';
-    } else {
-        return 'Hero attacked, done ' + this.damage + ' damage to ' + target.getCharClass();
-    }
+    return this.superclass.prototype.attack.call(this, target, prefix);
+
 
 };
 
@@ -175,13 +176,9 @@ Monster.prototype.attack = function(target) {
         throw new Error('I will attack only hero');
     }
 
-    this.superclass.prototype.attack.call(this, target);
+    var prefix = 'Monster attacked, ';
 
-    if (target.life === 0) {
-        return 'Monster attacked, ' + target.getCharClass() + ' killed';
-    } else {
-        return 'Monster attacked, done ' + this.damage + ' damage to ' + target.getCharClass();
-    }
+    return this.superclass.prototype.attack.call(this, target, prefix);
 
 };
 
@@ -329,4 +326,3 @@ Game.prototype.fight = function() {
         throw new Error('Begin your journey to start fighting monsters');
     }
 };
-
