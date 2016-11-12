@@ -29,16 +29,18 @@ function loadPage(bookId) {
         response.books.forEach(function (similarBookId) {
             bestsellersArr.push('api/bestsellers/similar/' + similarBookId);
         });
-        Promise.all(bestsellersArr)
-            .then(function (response) {
-                var p = document.getElementById('similar').appendChild('p').textContent = response;
-                similarBooksLoaded += 1
-            })
-            .then(function () {
-                if (similarBooksLoaded === similarBooksAmount) {
-                    alert('Horray everything loaded');
-                }
-            })
+        Promise.all(bestsellersArr.map(function (url) {
+            return fetch(url);
+        }))
+        .then(function (response) {
+            var p = document.getElementById('similar').appendChild('p').textContent = response;
+            similarBooksLoaded += 1
+        })
+        .then(function () {
+            if (similarBooksLoaded === similarBooksAmount) {
+                alert('Horray everything loaded');
+            }
+        })
     }).cetch(function () {
         document.getElementById('book').textContent = 'Error. Please refresh your browser';
     });
