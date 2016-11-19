@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function count() {
 
-        var counter = 86;
+        var counter = 1;
 
         return function (btn) {
 
