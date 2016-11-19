@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function count() {
 
-        var counter = 1;
+        var counter = 86;
 
         return function (btn) {
 
@@ -21,6 +21,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 return --counter;
 
             } else if (btn === 'next') {
+                if (counter === 88) {
+                    counter = 1;
+                    return counter;
+                }
                 document.getElementsByClassName('prevButton')[0].disabled = false;
                 counter++;
                 return counter;
