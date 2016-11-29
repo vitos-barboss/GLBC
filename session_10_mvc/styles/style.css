@@ -1,0 +1,25 @@
+.battle-field {
+    width: 216px;
+    height: 215px;
+    margin: 40px auto;
+}
+
+.row {
+    display: flex;
+}
+
+.col {
+    width: 50px;
+    height: 50px;
+    border: 2px solid darkblue;
+    font-size: 40px;
+    color: white;
+    text-align: center;
+    background-color: #659cef;
+}
+
+button {
+    margin-top: 15px;
+}
+
+
