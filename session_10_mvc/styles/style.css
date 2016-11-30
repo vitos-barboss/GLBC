@@ -22,4 +22,8 @@ button {
     margin-top: 15px;
 }
 
+.col:hover, 
+button:hover {
+    cursor: pointer;
+}
 
