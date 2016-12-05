@@ -7,47 +7,37 @@ var Model = {},
 	Controller = {};
 
 /**
- * Method of Model for set data in localStorage.
+ * Method of Model for set data in Model.data.
  * @param {object} newDataSet.
  */
 
 Model.setStorage = function (newDataSet) {
 
-	if (newDataSet !== undefined){
-		localStorage.setItem('savedData', JSON.stringify(newDataSet));
-		Model.data = Model.getStorageData();
-	}
+	Model.data = newDataSet;
 
 };
 
 /**
- * Method of Model for get data from localStorage.
- * @returns {object} Returns 'savedData' of localStorage if it contains, otherwise
- * set default 'savedData'.
+ * Method of Model for get data from Model.data.
  */
 
 Model.getStorageData = function () {
 
-	if (!localStorage.getItem('savedData')) {
-		var stockArr = [1,2,3,4,5,6,7,8,9,10,12,15,13,14,11, ' '];
-		Model.setStorage(stockArr);
-	}
-
-	 return JSON.parse(localStorage.getItem('savedData'));
+	 return Model.data;
 
 };
 
 /**
- * Property of Model with the data from localStorage.
+ * Property of Model with the data.
  */
 
-Model.data = Model.getStorageData();
+Model.data = null;
 
 /**
  * Method of View for render battle field and fill this one with Model.data.
  */
 
-View.render = function () {
+View.render = function (Model) {
 
 	createBattleField();
 	fillTheField(Model.data);
@@ -60,8 +50,6 @@ View.render = function () {
 
 Controller.handleOnLoad = function () {
 
-	Model.setStorage();
-
 	View.render(Model);
 
 	var mainField = document.getElementsByClassName('mainField')[0];
@@ -73,7 +61,40 @@ Controller.handleOnLoad = function () {
 
 };
 
-window.onload = Controller.handleOnLoad;
+/**
+ *  Event handler for the load event of a window.
+ *  Initializing first game with default values or get values from local storage.
+ */
+
+window.onload = function () {
+
+	var stockArr = [];
+
+	if (!localStorage.getItem('savedData')) {
+		stockArr = [1,2,3,4,5,6,7,8,9,10,12,15,13,14,11, ' '];
+
+	} else {
+		stockArr = JSON.parse(localStorage.getItem('savedData'));
+
+	}
+
+	Model.setStorage(stockArr);
+
+	Controller.handleOnLoad();
+};
+
+/**
+ *  Event handler for the unload event of a window.
+ *  Save values to local storage.
+ */
+
+window.onunload = function () {
+
+	var toLocal = JSON.stringify(Model.data);
+
+	localStorage.setItem('savedData', toLocal);
+
+};
 
 /**
  * Function for create the battle field.
@@ -163,6 +184,7 @@ function moveNumber(event) {
 	}
 
 	Controller.data2model();
+
 	Controller.checkWin();
 
 }
